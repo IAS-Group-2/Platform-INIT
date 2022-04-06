@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+</head>
+<body>
+    <form action="/search_query" method="POST">
+        <p>Select Operation:</p>
+        <input type="radio" id="ViewUsers" name="operation" value="ViewUsers">
+        <label for="ViewUsers">View Users</label>
+        <input type="radio" id="DeleteUser" name="operation" value="DeleteUser">
+        <label for="DeleteUser">DeleteUser</label>
+        <input type="radio" id="ViewRoles" name="operation" value="ViewRoles">
+        <label for="ViewRoles">View Roles</label>
+        <br>
+        <input type="text" placeholder="Username" name="username"/>
+        <br><br>
+        <button type="submit">Search</button>
+    </form>
+    
+</body>
+</html>
