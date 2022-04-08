@@ -9,17 +9,17 @@ def getRemoteFileList(DIRECTORY):
     os.system(command)
     os.system("ssh "+config.STORAGE_VM_NAME+"@"+config.STORAGE_VM_IP+" ls -l "+ DIRECTORY)
 
-def pullFile(TARGET_IP,TARGET_NAME,TARGET_PATH,SOURCE_PATH="./"):
+def pull_one(TARGET_PATH,SOURCE_PATH="./",TARGET_IP=config.STORAGE_VM_IP,TARGET_NAME=config.STORAGE_VM_NAME):
     """
     Copy a file from the remote directory to the local directory
     """
     TARGET_PATH = "/home/"+TARGET_NAME+"/"+TARGET_PATH
     command = "chmod +x storage_manager/copydir.exp"
     os.system(command)
-    command = "./copydir.exp "+TARGET_NAME+" "+TARGET_IP+" "+TARGET_PATH+" "+SOURCE_PATH+" "+config.STORAGE_VM_PASSWORD
+    command = "storage_manager/copydir.exp "+TARGET_NAME+" "+TARGET_IP+" "+TARGET_PATH+" "+SOURCE_PATH+" "+config.STORAGE_VM_PASSWORD
     os.system(command)
 
-def pullDirecory(TARGET_IP,TARGET_NAME,TARGET_PATH,SOURCE_PATH="./"):
+def pull_many(TARGET_IP,TARGET_NAME,TARGET_PATH,SOURCE_PATH="./"):
     """
     Copy a directory from the remote directory to the local directory
     """

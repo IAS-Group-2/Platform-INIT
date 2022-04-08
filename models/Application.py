@@ -1,7 +1,7 @@
 import json
 
 class App:
-    def __init__(self,name,description,status,owner_id,app_id,storage_loc,is_deployed=0,is_active=0,sensor_bindings=[],is_sheduled=0):
+    def __init__(self,name,description,status,owner_id,app_id,storage_loc,sensor_count,is_deployed=0,is_active=0,sensor_bindings=[],is_sheduled=0):
         self.name=name
         self.description=description
         self.status=status
@@ -14,6 +14,7 @@ class App:
         self.is_active = is_active
         self.sensor_bindings = sensor_bindings
         self.is_sheduled = is_sheduled
+        self.sensor_count = sensor_count
 
     #update sensor bindings
     def update_sensor_bindings(self,sensor_bindings):
@@ -46,7 +47,8 @@ class App:
             "sensor_bindings":self.sensor_bindings,
             "is_sheduled":self.is_sheduled,
             "is_uploaded":self.is_uploaded,
-            "zip_loc":self.zip_loc
+            "zip_loc":self.zip_loc,
+            "sensor_count":self.sensor_count
         }
     
         

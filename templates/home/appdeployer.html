@@ -30,19 +30,18 @@
                                 Hello, {{ username }}
                             </h1>
                             <div class="text-lead mb-4">
-                                <small>Application Developer</small>
-                              </div>
+                                <small>Application Deployer </small>
+                            </div>
                         </div>
-                        <div class="col-lg-6 col-md-6">
+                        
+                        <!-- <div class="col-lg-6 col-md-6">
                             <div class="text-right text-lead mb-5">
-                                <!-- adding button to next page -->
-                                <!-- <button type="button" class="btn btn-primary">+ Add New</button> -->
                                 <a href="/registerApp" class="btn btn-primary">
                                     <i class="fas fa-plus mr-2"></i>
                                     Add New
                                 </a>
                               </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="table-responsive">
                         <div>
@@ -50,13 +49,13 @@
                                 <thead class="thead-light">
                                     <tr>
                                         <th scope="col" class="sort" data-sort="name">App Name</th>
-                                        <th scope="col" class="sort" data-sort="budget">Last Deployed...</th>
+                                        <th scope="col" class="sort" data-sort="budget">Discription</th>
                                         <th scope="col" class="sort" data-sort="status">Status</th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="list">
-                                
+
                                     <!-- <tr>
                                         <td class="budget">
                                             First App
@@ -81,20 +80,23 @@
                                         </td>
                                         <td>
                                             <span class="badge badge-dot mr-4">
-                                              <span class="status">{{ app.description }}</span>
+                                                <span class="status">{{ app.description }}</span>
                                             </span>
                                         </td>
                                         <td>
                                             <span class="badge badge-dot mr-4">
-                                              <i class="bg-success"></i>
-                                              <span class="status">{{ app.status }}</span>
+                                                <i class="bg-success"></i>
+                                                <span class="status">{{ app.status }}</span>
                                             </span>
                                         </td>
-                                    {% endfor %}
-                                        
+                                        <td>
+                                            {% include "includes/modal_form.html" %}
+                                        </td>
+                                        {% endfor %}
+
 
                             </table>
-                        </div>  
+                        </div>
                     </div>
                 </div>
             </div>

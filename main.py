@@ -9,10 +9,12 @@ from utils.UploadHelper import get_new_index
 import config.config as config
 
 from app_manager.AppDirector import AppDirector
+from app_manager.AppDeployer import AppDeployer
 from models.Application import App as application
 from storage_manager import config as storage_config
 
 from service_manager.ServiceDirector import Director as ServiceDirector
+from utils.SensorDBHelper import SensorDB
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -21,6 +23,7 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 db = DBHelper()
+sensordb = SensorDB(db)
 
 # class UploadFileForm(FlaskForm):
 #     file = FileField("File", validators=[InputRequired()])
@@ -119,6 +122,7 @@ def uploadApp():
         if request.method == 'POST':
             app_name=request.form['app_name']
             app_description=request.form['app_discription']
+            sensor_count=request.form['sensor_count']
             f = request.files['file']
             cur_index = get_new_index(config.TYPE_SERVICE)
             filename = "application_"+str(cur_index)
@@ -126,7 +130,7 @@ def uploadApp():
             f.save(path)
 
             #pushing to db and storage
-            app = application(app_name,app_description,'Uploaded',username,cur_index,storage_config.STORAGE_VM_ADDRESS+"/"+filename+".zip")
+            app = application(app_name,app_description,'Uploaded',username,cur_index,storage_config.STORAGE_VM_ADDRESS+"/"+filename+".zip",sensor_count)
             app_director = AppDirector(app,path)
             app_director.sync_db()
             app_director.push_app()
@@ -167,18 +171,31 @@ def appdeployer():
     if 'username' in session:
         username=session.get('username')
         apps=db.getApplications()
+        # for app in apps:
+        #     print(app.to_json())
         return render_template("home/appdeployer.html",username=username,apps=apps)
     else:
         return render_template("home/login.html",segment='login')
 
-
-
-
-
-
-
-
-
+#deployApp
+@app.route('/deployApp', methods=["GET","POST"])
+def deployApp():
+    #check for session
+    if 'username' in session:
+        username=session.get('username')
+        if request.method == 'POST':
+            app_id=request.form['app_id']
+            # app_name=request.form['app_name']
+            sensor_count=request.form['sensor_count']
+            sensors=[]
+            for i in range(int(sensor_count)):
+                sensor = sensordb.get_sensor_by_id(request.form['sensor_'+str(i+1)])
+                sensors.append(sensor)
+            deployer = AppDeployer(app_id,sensors)
+            deployer.deploy()   
+        return redirect("/appdeployer")
+    else:
+        return redirect("/")
 
 
 

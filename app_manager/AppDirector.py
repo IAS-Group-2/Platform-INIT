@@ -18,5 +18,8 @@ class AppDirector:
     def push_app(self):
         storage.push(self.path,config.STORAGE_VM_ADDRESS)
         os.remove(self.path)
+    
+    
+         
         
     

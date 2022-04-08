@@ -9,7 +9,7 @@ class DBHelper:
         self.DB = self.CLIENT["mydatabase"]
         self.REGT_USER = self.DB["registeredUsers"]
         self.applications = self.DB["applications"]
-
+    
     def storeData(self,username,password,role):       
         required_user=self.REGT_USER.find_one({"user_name":username,"password":password})
         if required_user is not None:
@@ -64,7 +64,7 @@ class DBHelper:
         allApps=self.applications.find({})
         apps=[]
         for app in allApps:
-            tempApp = App(app['name'],app['description'],app['status'],app['owner_id'],app['app_id'],app['zip_loc'],app['is_deployed'],app['is_active'],app['sensor_bindings'],app['is_sheduled'])
+            tempApp = App(app['name'],app['description'],app['status'],app['owner_id'],app['app_id'],app['zip_loc'],app['sensor_count'],app['is_deployed'],app['is_active'],app['sensor_bindings'],app['is_sheduled'])
             apps.append(tempApp)
         return apps
     
@@ -77,7 +77,7 @@ class DBHelper:
         apps=[]
         #convert the json to Applications
         for app in allApps:
-            tempApp = App(app['name'],app['description'],app['status'],app['owner_id'],app['app_id'],app['zip_loc'],app['is_deployed'],app['is_active'],app['sensor_bindings'],app['is_sheduled'])
+            tempApp = App(app['name'],app['description'],app['status'],app['owner_id'],app['app_id'],app['zip_loc'],app['sensor_count'],app['is_deployed'],app['is_active'],app['sensor_bindings'],app['is_sheduled'])
             apps.append(tempApp)
         return apps
 
