@@ -4,7 +4,7 @@ from models.Application import App
 
 class DBHelper:
     def __init__(self):
-        self.CONN = "mongodb://20.228.199.180:3000/"
+        self.CONN = "mongodb://20.92.109.61:3000/"
         self.CLIENT = pymongo.MongoClient(self.CONN)
         self.DB = self.CLIENT["mydatabase"]
         self.REGT_USER = self.DB["registeredUsers"]
