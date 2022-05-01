@@ -1,6 +1,7 @@
 from utils.DBHelper import DBHelper
 from models.Sensor import Sensor
 from utils.SensorDBHelper import SensorDB
+from utils.ServiceDBHelper import ServiceDB
 from utils import storageHelper as storage
 from storage_manager import config
 # import config.config as config
@@ -23,25 +24,31 @@ mongo = DBHelper()
 # # #register an application
 # # mongo.registerApp(app)
 
+# sensordb = SensorDB(mongo)
 sensordb = SensorDB(mongo)
+servicedb = ServiceDB(mongo)
 
 sensor = {
-    "sensor_name":"Camera_02",
-    "sensor_id":"c02",
-    "sensor_topic":"camera_02",
-    "sensor_loc":"pc_sahu",
+    "sensor_name":"Camera_01",
+    "sensor_id":"c01",
+    "sensor_topic":"camera_01",
+    "sensor_loc":"pc_lalit",
     "sensor_type":"Camera",
     "sensor_description":"Laptop's front camera"
 }
 
-# sensor = Sensor(sensor)
+sensor = Sensor(sensor)
 # sensordb.remove_sensor_by_id('s23')
-# sensordb.register_sensor(sensor)
-# print(sensordb.get_sensors())
+sensordb.register_sensor(sensor)
+print(sensordb.get_sensors())
 
-sensors = sensordb.get_sensors()
-for sensor in sensors:
-    print(sensor.to_json())
+# sensors = sensordb.get_sensors()
+# for sensor in sensors:
+#     print(sensor.to_json())
+
+# services = servicedb.get_services_by_user('s')
+# for service in services:
+#     print(service.to_json())
 
 #print application jsons
 # apps = mongo.getApplications()

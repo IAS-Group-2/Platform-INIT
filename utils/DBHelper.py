@@ -80,4 +80,9 @@ class DBHelper:
             tempApp = App(app['name'],app['description'],app['status'],app['owner_id'],app['app_id'],app['zip_loc'],app['sensor_count'],app['is_deployed'],app['is_active'],app['sensor_bindings'],app['is_sheduled'])
             apps.append(tempApp)
         return apps
+    
+    def getAppById(self,app_id):
+        app=self.applications.find_one({"app_id":app_id})
+        tempApp = App(app['name'],app['description'],app['status'],app['owner_id'],app['app_id'],app['zip_loc'],app['sensor_count'],app['is_deployed'],app['is_active'],app['sensor_bindings'],app['is_sheduled'])
+        return tempApp
 

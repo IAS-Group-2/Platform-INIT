@@ -1,7 +1,5 @@
 # from urllib import response
-from ensurepip import bootstrap
 from flask import Flask, render_template, request, redirect,session
-from werkzeug.utils import secure_filename
 import os
 from utils.DBHelper import DBHelper
 from flask_session import Session
@@ -15,6 +13,8 @@ from storage_manager import config as storage_config
 
 from service_manager.ServiceDirector import Director as ServiceDirector
 from utils.SensorDBHelper import SensorDB
+from utils.ServiceDBHelper  import ServiceDB
+from models.Service import Service
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
@@ -24,6 +24,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 db = DBHelper()
 sensordb = SensorDB(db)
+servicedb = ServiceDB(db)
 
 # class UploadFileForm(FlaskForm):
 #     file = FileField("File", validators=[InputRequired()])
@@ -92,7 +93,9 @@ def aidev():
     #check for session
     if 'username' in session:
         username=session.get('username')
-        return render_template("home/aidev.html",username=username)
+        #get all the services of the user
+        services=servicedb.get_services_by_user(username)
+        return render_template("home/aidev.html",username=username,services=services)
     else:
         return render_template("home/login.html",segment='login')
 
@@ -124,7 +127,7 @@ def uploadApp():
             app_description=request.form['app_discription']
             sensor_count=request.form['sensor_count']
             f = request.files['file']
-            cur_index = get_new_index(config.TYPE_SERVICE)
+            cur_index = get_new_index(config.TYPE_APP)
             filename = "application_"+str(cur_index)
             path = os.path.join(os.path.abspath(os.path.dirname(__file__)),config.UPLOAD_FOLDER, filename+".zip")
             f.save(path)
@@ -146,22 +149,29 @@ def uploadModel():
     if 'username' in session:
         username=session.get('username')
         if request.method == 'POST':
-            app_name=request.form['service_name']
-            app_description=request.form['service_discription']
+            service_name=request.form['service_name']
+            service_description=request.form['service_discription']
             f = request.files['file']
             cur_index = get_new_index(config.TYPE_SERVICE)
             filename = "service_"+str(cur_index)
             path = os.path.join(os.path.abspath(os.path.dirname(__file__)),config.UPLOAD_FOLDER, filename+".zip")
             f.save(path)
-            
             director = ServiceDirector(cur_index)
+            service = {
+                "name": service_name,
+                "description": service_description,
+                "owner": username,
+                "location": storage_config.STORAGE_VM_ADDRESS_MODELS+"/"+filename+".zip",
+                "topic": "service_"+str(cur_index),#model_23
+                "is_deployed": True,
+                "id": str(cur_index)
+            }
             if director.is_valid():
+                director.sync_db(Service(service),servicedb)
                 director.upload()
-                
         return redirect("/aidev")
-
     else:
-        return redirect("/") 
+        return redirect("/")
 
 
 #App Deployer
@@ -191,17 +201,13 @@ def deployApp():
             for i in range(int(sensor_count)):
                 sensor = sensordb.get_sensor_by_id(request.form['sensor_'+str(i+1)])
                 sensors.append(sensor)
-            deployer = AppDeployer(app_id,sensors)
+            #get app
+            app=db.getAppById(app_id)
+            deployer = AppDeployer(app.name,app_id,sensors)
             deployer.deploy()   
         return redirect("/appdeployer")
     else:
         return redirect("/")
-
-
-
-
-
-
 
 @app.route('/login', methods=["POST"])  
 def login():

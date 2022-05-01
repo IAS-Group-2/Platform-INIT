@@ -8,6 +8,7 @@ import os
 import config.config as config
 import json
 
+
 class Director:
     def __init__(self,lastindex):
         #create data.json file
@@ -26,7 +27,10 @@ class Director:
                     filePath = os.path.join(folderName, filename)
                     # Add file to zip
                     zipObj.write(filePath)
-        
+
+    def sync_db(self,service,db):
+        #add topic to service
+        db.register_service(service)
 
     def setup_Dir(self):
         #create a directory model#lastindex
@@ -42,14 +46,25 @@ class Director:
         print("Message sent to LBS")
         self.producer.close()
 
+    def extract_reqs(self):
+        with open(self.dir+"/contract.json") as f:
+            contract = json.load(f)
+        #read import-files
+        requirement_apt = contract["requirement-apt"]
+        requirement_var = contract["requirement-var"]
+        return requirement_apt, requirement_var
+
     def upload(self):
         print("Start of upload...")
-        DockerGenerator.create(self.dir,[])
+        #extract reqs
+        requirement_apt, requirement_var = self.extract_reqs()
+        
+        DockerGenerator.create(self.dir,requirement_apt,requirement_var)
         self.create_zip()
         os.system("rm -rf "+self.dir)
         storageInterface.push(self.dir+'.zip',storage_config.STORAGE_VM_ADDRESS_MODELS)
         msg = json.dumps({"service_name":self.dir})
-        #delete the zip file
+        # #delete the zip file
         os.remove(self.dir+'.zip')
         self.ping_lbs(msg)
         

@@ -47,22 +47,26 @@
                                 </thead>
                                 <tbody class="list">
                                 
+                                    {% for service in services %}
                                     <tr>
                                         <td class="budget">
-                                            First App
+                                            {{ service.name }}
                                         </td>
                                         <td>
                                             <span class="badge badge-dot mr-4">
-                                              <span class="status">20/01/2021</span>
+                                              <span class="status">{{ service.description }}</span>
                                             </span>
                                         </td>
                                         <td>
                                             <span class="badge badge-dot mr-4">
-                                              <i class="bg-warning"></i>
-                                              <span class="status">pending</span>
+                                              <i class="bg-success"></i>
+                                              <span class="status">{{ service.topic }}</span>
                                             </span>
                                         </td>
-                                    </tr>          
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                    </tbody>        
                             </table>
                         </div>  
                     </div>
